@@ -1,7 +1,9 @@
 ﻿
 using Payroll.Models.Beans;
 using Payroll.Models.Daos;
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Web.Mvc;
 
 
@@ -395,24 +397,22 @@ namespace Payroll.Controllers
         [HttpPost]
         public JsonResult getProfileType()
         {
-            string fconsulta = "";
-            if (bool.Parse(Session["Consulta"].ToString()))
+            try
             {
-                fconsulta = "" +
-                  "<script>" +
-                  "$(function(){" +
-                    "var btns = document.querySelectorAll('.btn-priority');" +
-                    "for (let i = 0; i < btns.length; i++) {" +
-                      "var parent = btns[i].parentNode;" +
-                      "parent.removeChild(btns[i]);" +
-                    "}" +
-                    "setTimeout(function () {" +
-                      "$('#renderbody').html('');" +
-                    "},2500);" +
-                  "});" +
-                  "</script>";
+                StringBuilder fconsulta = new StringBuilder("");
+                if (bool.Parse(Session["Consulta"].ToString()))
+                {
+                    fconsulta.Append("<script>$(function(){var btns = document.querySelectorAll('.btn-priority');for (let i = 0; i < btns.length; i++) {var parent = btns[i].parentNode;parent.removeChild(btns[i]);}setTimeout(function () {$('#renderbody').html('');},2500);});</script>");
+                }
+                return Json(fconsulta);
             }
-            return Json(fconsulta);
+            catch (Exception)
+            {
+                LoginController cn = new LoginController();
+                cn.Logout();
+                return Json("");
+            }
+
         }
 
     }
